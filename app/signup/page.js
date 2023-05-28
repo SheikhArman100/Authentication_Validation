@@ -27,16 +27,17 @@ const Signup = () => {
 
      async function onSubmit(values){
         //console.log(values)
-        const req = await fetch("http://localhost:3000/api/signup",{
+        const res=await fetch("http://localhost:3000/api/signup",{
             method: "POST",
             headers : { 'Content-Type': 'application/json'},
             body: JSON.stringify(values)
         });
-  //       const {user} = await res.json();
-  // //       if (user) {
-  // //           redirect('/login');
-  // // }
-  //       console.log(`user---> ${user}`)
+        console.log(res)
+        const data = await res.json();
+        console.log(data.message)
+  //       if () {
+  //           redirect('/login');
+  //  }
 
         
     }

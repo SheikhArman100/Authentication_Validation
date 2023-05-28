@@ -30,7 +30,11 @@ export async function POST(request) {
         password : await hash(password, 12)},
     )
    newUser.save()
-   return NextResponse.json(newUser)
+   return NextResponse.json({
+    message:"New user created......"
+   },{
+    status:200
+   })
       
 
 
