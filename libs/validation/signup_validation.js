@@ -26,7 +26,7 @@ export const signup_validation = (values) => {
 
   //!confirmPassword validation
   if (!values.confirmPassword) {
-    errors.confirmPassword = "Required";
+    errors.confirmPassword = "Confirm password Required";
   } else if (values.password !== values.confirmPassword) {
     errors.confirmPassword = "Password Not Match...!";
   } else if (values.confirmPassword.includes(" ")) {
