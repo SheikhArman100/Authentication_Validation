@@ -4,12 +4,10 @@ const userSchema = new Schema({
     username: {
     type: String,
     required: true,
-    unique: true
   },
   email: {
     type: String,
     required: true,
-    unique: true
   },
   password: {
     type: String,
@@ -21,6 +19,6 @@ const userSchema = new Schema({
   }
 })
 
-const Users = models.user || model('user', userSchema); //create user database.if not created yet,then create new database called user
+const Users = models.register_user || model('register_user', userSchema); //create user database.if not created yet,then create new database called user
 
 export default Users;

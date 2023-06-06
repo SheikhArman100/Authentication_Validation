@@ -2,6 +2,7 @@
 
 import { signin_validation } from "@/libs/validation/signin_validation";
 import { useFormik } from "formik";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
 import { BiHide } from "react-icons/bi";
@@ -10,8 +11,10 @@ import { FaInfinity } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineEye, HiOutlineMail } from "react-icons/hi";
 import { SiGmail } from "react-icons/si";
+import { useRouter } from "next/navigation";
 
 const Signin = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
   const [focused, setFocused] = useState({
@@ -29,7 +32,17 @@ const Signin = () => {
   });
 
   async function onSubmit(values) {
-    console.log(values);
+    const status = await signIn("credentials", {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      callbackUrl: "/",
+    });
+    console.log(status)
+
+    if (status.ok) {
+      router.push("http://localhost:3000/");
+    } 
   }
   return (
     <div className="w-[95%] sm:w-[25rem]  bg-[#090f21] text-white px-3 py-5 rounded-md">
@@ -161,30 +174,44 @@ const Signin = () => {
         <button
           type="submit"
           className="w-full bg-[#1e6fdf] mt-2 py-3 text-base font-[500] rounded-md"
+          onClick={onSubmit}
         >
           Sign in
         </button>
-        {/* other sign in option */}
-        <div className="w-full flex flex-col items-center gap-y-3 mt-2">
-          <p>-- or Sign in with --</p>
-          <div className="flex items-center justify-between gap-4 ">
-            <button className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2">
-              <FcGoogle size={20} />
-              Google
-            </button>
-
-            <button className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2">
-              <BsGithub size={20} />
-              Github
-            </button>
-
-            <button className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2">
-              <SiGmail size={20} />
-              Email
-            </button>
-          </div>
-        </div>
       </form>
+      {/* other sign in option */}
+      <div className="w-full flex flex-col items-center gap-y-3 mt-2">
+        <p>-- or Sign in with --</p>
+        <div className="flex items-center justify-between gap-4 ">
+          {/* //!google sign in button */}
+          <button
+            className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2"
+            onClick={() =>
+              signIn("google", { callbackUrl: "http://localhost:3000/" })
+            }
+          >
+            <FcGoogle size={20} />
+            Google
+          </button>
+
+          <button
+            className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2"
+            onClick={() =>
+              signIn("github", {
+                callbackUrl: "http://localhost:3000/",
+              })
+            }
+          >
+            <BsGithub size={20} />
+            Github
+          </button>
+
+          <button className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2">
+            <SiGmail size={20} />
+            Email
+          </button>
+        </div>
+      </div>
 
       <div className="text-center mt-4 px-2 mb-2">
         <p className="text-gray-400 text-xs font-[500]">
