@@ -30,7 +30,7 @@ export default function Home() {
       )} 
 
       <h2>{session?.user.email}</h2>
-      <h2></h2>
+      <h2>{session?.user.name}</h2>
     </main>
   );
 }

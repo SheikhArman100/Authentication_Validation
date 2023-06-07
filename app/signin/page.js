@@ -4,6 +4,7 @@ import { signin_validation } from "@/libs/validation/signin_validation";
 import { useFormik } from "formik";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BiHide } from "react-icons/bi";
 import { BsGithub } from "react-icons/bs";
@@ -11,7 +12,6 @@ import { FaInfinity } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { HiOutlineEye, HiOutlineMail } from "react-icons/hi";
 import { SiGmail } from "react-icons/si";
-import { useRouter } from "next/navigation";
 
 const Signin = () => {
   const router = useRouter();
@@ -32,17 +32,16 @@ const Signin = () => {
   });
 
   async function onSubmit(values) {
-    const status = await signIn("credentials", {
+    const res = await signIn("credentials", {
       redirect: false,
       email: values.email,
       password: values.password,
-      callbackUrl: "/",
+      
     });
-    console.log(status)
-
-    if (status.ok) {
-      router.push("http://localhost:3000/");
+   if (!res.error) {
+    router.push("http://localhost:3000/");
     } 
+    setError(res.error)
   }
   return (
     <div className="w-[95%] sm:w-[25rem]  bg-[#090f21] text-white px-3 py-5 rounded-md">
@@ -97,9 +96,9 @@ const Signin = () => {
           ) : (
             ""
           )}
-          {error === "Email Already Used...!" ? (
+          {error === "Email doesn't match with any registered user" ? (
             <span className="text-rose-500 text-xs">
-              Email Already Used...!
+              Email does not match with any registered user
             </span>
           ) : (
             ""
@@ -168,13 +167,20 @@ const Signin = () => {
           ) : (
             ""
           )}
+          {error === "Password doesn't match" ? (
+            <span className="text-rose-500 text-xs">
+              Password does not match
+            </span>
+          ) : (
+            ""
+          )}
         </div>
 
         {/* Button */}
         <button
           type="submit"
           className="w-full bg-[#1e6fdf] mt-2 py-3 text-base font-[500] rounded-md"
-          onClick={onSubmit}
+          
         >
           Sign in
         </button>

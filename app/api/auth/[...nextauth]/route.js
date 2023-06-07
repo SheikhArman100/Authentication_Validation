@@ -7,6 +7,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import Users from "@/libs/mongodb/model/user_schema";
 import connectMongo from "@/libs/mongodb/connect";
 import { compare } from "bcryptjs";
+import { NextResponse } from "next/server";
 
 export const authOptions = {
   adapter: MongoDBAdapter(clientPromise), //MongoDBAdapter(clientPromise,collection,database_name)
@@ -23,28 +24,48 @@ export const authOptions = {
     CredentialsProvider({
             name : "Credentials",
             async authorize(credentials, req){
-                connectMongo().catch(error => { error: "Connection Failed...!"})
+                await connectMongo().catch(error => { error: "Connection Failed...!"})
 
                 // check user existance
-                const result = await Users.findOne( { email:credentials.email})
-                console.log(result)
-                if(!result){
-                    return null
+                const user = await Users.findOne( { email:credentials.email})
+                
+                if(!user){
+                    throw new Error("Email doesn't match with any registered user")
                 }
 
                 // compare()
-                const checkPassword = await compare(credentials.password, result.password);
+                const checkPassword = await compare(credentials.password, user.password);
                 
                 // incorrect password
-                if(!checkPassword || result.email !== credentials.email){
-                    throw new Error("Username or Password doesn't match");
+                if(!checkPassword){
+                    throw new Error("Password doesn't match");
                 }
 
-                return result;
+                return user
 
             }
         })
   ],
+  callbacks: {
+  async session({ session, token, user }) {
+    // Send properties to the client, like an access_token and user id from a provider.
+    session.accessToken = token.accessToken
+    session.user.id = token.id
+    session.user.name= token.name||token.username
+    
+   return session
+  },
+  async jwt({token,user}){
+    if (user) {
+                token.id = user.id;
+                token.jwt = user.jwt;
+                token.username = user.name||user.username /* added */
+            }
+            return token
+
+  }
+},
+
   secret: process.env.JWT_SECRET,
   session: {
     strategy: "jwt",
