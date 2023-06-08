@@ -11,7 +11,7 @@
     @apply overflow-x-hidden  focus-within:scroll-smooth bg-[#1d2540];
   }
   body {
-    @apply  w-screen h-screen max-w-[1440px] mx-auto flex items-center justify-center ;
+    @apply  w-screen h-screen max-w-[1440px] bg-[#1d2540] mx-auto flex items-center justify-center ;
   }
   ul,
   ol {

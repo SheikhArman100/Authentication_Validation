@@ -54,7 +54,7 @@ const Signup = () => {
     console.log(data.message);
     setError(data.message);
     if (data.message === "New user created......") {
-      router.push("http://localhost:3000");
+      router.push("http://localhost:3000/signin");
     }
   }
   return (

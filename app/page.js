@@ -1,15 +1,15 @@
 "use client";
 
-import {signOut, useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import UpdateModal from "./Components/UpdateModal";
 
 export default function Home() {
   const {data:session} = useSession();
   const router=useRouter()
-  console.log(session)
 
   return (
-    <main className="flex min-h-screen flex-col items-center  p-24">
+    <main className="flex min-h-screen flex-col items-center justify-center">
        
           
         
@@ -31,6 +31,7 @@ export default function Home() {
 
       <h2>{session?.user.email}</h2>
       <h2>{session?.user.name}</h2>
+      {session?<UpdateModal/>:""}
     </main>
   );
 }

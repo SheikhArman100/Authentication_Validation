@@ -212,10 +212,7 @@ const Signin = () => {
             Github
           </button>
 
-          <button className="py-2 px-4 border border-gray-500 rounded-md flex items-center gap-2">
-            <SiGmail size={20} />
-            Email
-          </button>
+          
         </div>
       </div>
 
